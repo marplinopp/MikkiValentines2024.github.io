@@ -1,1 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentines Day</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-background {
+            background: rgb(255, 208, 229);
+            background: linear-gradient(180deg, rgba(255, 208, 229, 1) 0%, rgba(255, 232, 242, 1) 36%, rgba(255, 255, 255, 1) 100%);
+        }
+
+        .bounce2 {
+            animation: bounce2 2s ease infinite;
+        }
+
+        @keyframes bounce2 {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-20px);
+            }
+
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @import url("https://fonts.googleapis.com/css2?family=Pacifico:wght@200;400;600&display=swap");
+
+        @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css");
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .cd__main {
+            background: pink !important;
+            font-family: 'Pacifico', cursive !important;
+            min-height: 450px;
+        }
+
+        body {
+            background-color: pink;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Pacifico', cursive;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .heart {
+            position: fixed;
+            font-size: 1.5rem;
+            top: -1vh;
+            transform: translateY(0);
+            animation: fall 1s linear forwards;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(0vh) translateX(-10vw);
+            }
+
+            to {
+                transform: translateY(105vh) translateX(10vw);
+            }
+        }
+    </style>
+</head>
+
+<body class="gradient-background">
+    <div class="flex items-center justify-center h-screen">
+        <div class="flex flex-col items-center p-4">
+            <img id="imageDisplay" src="./Assets/CapyWink.gif" alt="Capy winking" class="rounded-md h-[300px]"
+                style="object-fit: cover;" />
+            <h2 
+                id="valentineQuestion" class="text-4xl font-bold italic text-[#bd1e59] my-4"> HEWWO Mikki, good morning :D
+            </h2>
+            <h2 
+                id="valentineQuestion2" class="text-4xl font-bold italic text-[#bd1e59] my-4"> I hope you open this when you wake up
+            </h2>
+            <h2 
+                id="valentineQuestion3" class="text-4xl font-bold italic text-[#bd1e59] my-4"> Will you be my valentine?
+            </h2>
+            <br>
+            <div class="flex gap-4 pt-[20px] items-center" id="responseButtons">
+                <button id="yesButton"
+                    class="bounce2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-[20px] font-medium disabled:pointer-events-none disabled:opacity-50 hover:bg-green-400 min-h-12 min-w-[75px] px-4 py-2 bg-green-500 text-white transition">
+                    Yes
+                </button>
+                <button id="noButton"
+                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-[20px] font-medium transition disabled:pointer-events-none disabled:opacity-50 hover:bg-red-700 h-12 min-w-[75px] w-auto px-4 py-2 bg-red-500 text-white">
+                    No
+                </button>
+            </div>
+            <div class="flex gap-4 pt-[20px] items-center" id="whatToDoButtons">
+                <button id="eatHomeButton"
+                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-[20px] font-medium transition disabled:pointer-events-none disabled:opacity-50 hover:bg-pink-700 h-20 min-w-[75px] w-auto px-4 py-2 bg-red-500 text-white">
+                    Eat at your home
+                </button>
+
+                <button id="eatOutButton"
+                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-[20px] font-medium transition disabled:pointer-events-none disabled:opacity-50 hover:bg-pink-700 h-20 min-w-[75px] w-auto px-4 py-2 bg-red-500 text-white">
+                    Eat outside
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <audio id="audio" src="./Assets/NewJeansOMG.mp3"></audio>
+
+    <script type="module">
+        import confetti from 'https://cdn.skypack.dev/canvas-confetti';
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
+        const eatAtHomeButton = document.getElementById('eatHomeButton')
+        const eatOutsideButton = document.getElementById('eatOutButton')
+        const imageDisplay = document.getElementById('imageDisplay');
+        const valentineQuestion = document.getElementById('valentineQuestion');
+        const valentineQuestion3 = document.getElementById('valentineQuestion2');
+        const valentineQuestion2 = document.getElementById('valentineQuestion3');
+        const responseButtons = document.getElementById('responseButtons');
+        const whatToDoButtons = document.getElementById('whatToDoButtons');
+
+        // Hide question buttons initially
+        whatToDoButtons.style.display = 'none';
+
+        let noClickCount = 0;
+        let buttonHeight = 48; // Starting height in pixels
+        let buttonWidth = 80;
+        let fontSize = 20; // Starting font size in pixels
+        const imagePaths = [
+            "./Assets/PlonkCat.gif",
+            "./Assets/CrunchCat.gif",
+            "./Assets/YellowIsopod.gif",
+            "./Assets/PlonkCat.gif",
+            "./Assets/WhaleShark.gif",
+            "./Assets/CapybaraPumpkin.gif",
+            "./Assets/PigNoseSqueez.gif"
+        ];
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+
+            heart.innerText = '💗';
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        function createHeart2() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+
+            heart.innerText = '🥰';
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        function playFartSound() {
+            var sound = new Audio('./Assets/FartSound.mp3');
+            sound.play();
+        };
+
+        noButton.addEventListener('click', function () {
+            if (noClickCount < 5) {
+                noClickCount++;
+                imageDisplay.src = imagePaths[noClickCount];
+                buttonHeight += 35; // Increase height by 5px on each click
+                buttonWidth += 35;
+                fontSize += 25; // Increase font size by 1px on each click
+                yesButton.style.height = `${buttonHeight}px`; // Update button height
+                yesButton.style.width = `${buttonWidth}px`;
+                yesButton.style.fontSize = `${fontSize}px`; // Update font size
+                //valentineQuestion.textContent = "Yayyy!! Tell me wat you want to do :D :D";
+                valentineQuestion2.textContent = "";
+                valentineQuestion3.textContent = "";
+                if (noClickCount < 6) {
+                    //noButton.textContent = ["No", "Mikki is a stinky >:(", "Mikki is a super stinky >:(", "Mikki is crunchy cat >:(", "Mikki is stinky crunchy cat >:(", "Mikki isopod >:(", "Mikki is super isopod crunchycat capy >:( >:("][noClickCount];
+                    valentineQuestion.textContent  = ["No", "Mikki is a stinky >:(", "Mikki is a super stinky >:(", "Mikki is crunchy cat >:(", "Mikki is stinky crunchy cat >:(", "Mikki isopod >:(", "Mikki is super isopod crunchycat capy >:( >:("][noClickCount];
+                }
+            }
+            playFartSound()
+        });
+
+        yesButton.addEventListener('click', () => {
+
+            // Change the image when clicking yes
+            imageDisplay.src = './Assets/PigDance.gif';
+
+            // Change the question text
+            valentineQuestion.textContent = "Yayyy!! Tell me wat you want to do :D :D";
+            valentineQuestion2.textContent = "";
+            valentineQuestion3.textContent = "";
+
+            responseButtons.style.display = 'none'; // Hide both buttons
+            whatToDoButtons.style.display = 'flex';
+
+
+            // Play music
+            var audio = document.getElementById("audio")
+            audio.load() // Load music
+            audio.play() // Play music
+
+
+            // Trigger confetti animation
+            confetti();
+
+            // Trigger hearts
+            setInterval(createHeart, 300);
+            setInterval(createHeart2, 300);
+
+        });
+
+        eatAtHomeButton.addEventListener('click', () => {
+            playFartSound()
+        })
+        eatOutsideButton.addEventListener('click', () => {
+            playFartSound()
+        })
+
+
+    </script>
+
+
+</body>
+
+</html>
